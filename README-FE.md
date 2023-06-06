@@ -35,8 +35,15 @@ Allow the user to navigate between multiple pages of results. Right now we are o
 - [ ] Connect the input to component state
 - [ ] Refactor the side-effect to include the new facet in the api call
 - [ ] Debounce the inputs
-- [ ] Add previous/next page buttons
+- [ ] Add next page buttons
 - [ ] Connect the buttons to callbacks that replace the api url with `self.href` or `next.hef` from the api response
+- [ ] Make a list of tasks that we need to do to improve architecture and code quality
+
+### Bonus tasks
+
+- [ ] Add previous page buttons
+- [ ] Implement skeleton for loading status (assets/sk.png)
+- [ ] Implement UI like (assets/demo.gif) (assets/another.gif) (assets/sug.png)
 
 ### When you finish
 
