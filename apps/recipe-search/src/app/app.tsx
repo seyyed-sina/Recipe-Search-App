@@ -1,5 +1,5 @@
-import { CssBaseline, Paper, Stack, Typography } from '@mui/material'
-import RecipeList from './recipe-list/recipe-list'
+import { CssBaseline, Paper, Typography } from '@mui/material'
+import RecipeList from './components/recipe-list/recipe-list'
 
 export function App() {
   return (
@@ -9,6 +9,7 @@ export function App() {
         <Typography variant="h2" sx={{ pb: 2 }}>
           Hyphen Candidate Project
         </Typography>
+
         <RecipeList />
       </Paper>
     </>
