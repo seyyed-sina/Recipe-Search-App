@@ -27,29 +27,22 @@
     "project": "./tsconfig.base.json"
   },
   "rules": {
+    "react/prop-types": "off",
     "import/no-extraneous-dependencies": "off",
     "import/no-named-as-default": "off",
     "react/react-in-jsx-scope": "off",
     "linebreak-style": "off",
     "react/jsx-props-no-spreading": "off",
-    // "no-console": "error",
+    "@typescript-eslint/no-empty-interface": "warn",
     "no-var": "warn",
     "@typescript-eslint/no-floating-promises": "off",
     "react/jsx-one-expression-per-line": "off",
-    "spaced-comment": ["error", "always"],
-    "eqeqeq": ["error", "smart"],
     "no-else-return": "warn",
     "no-empty-function": "warn",
     "react/require-default-props": "off",
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/ban-ts-ignore": "off",
-    "max-len": [
-      "error",
-      {
-        "code": 120
-      }
-    ],
     "array-callback-return": "warn",
     "import/prefer-default-export": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
@@ -58,7 +51,26 @@
     "@typescript-eslint/no-loss-of-precision": "off",
     "react/button-has-type": "off",
     "no-plusplus": "off",
-    "no-param-reassign": "off"
+    "no-param-reassign": "off",
+    "import/order": [
+      "warn",
+      {
+        "groups": ["builtin", "external", "internal"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ]
   },
   "overrides": [
     // {

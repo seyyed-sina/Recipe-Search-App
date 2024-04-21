@@ -9,7 +9,6 @@ export function App() {
         <Typography variant="h2" sx={{ pb: 2 }}>
           Hyphen Candidate Project
         </Typography>
-
         <RecipeList />
       </Paper>
     </>

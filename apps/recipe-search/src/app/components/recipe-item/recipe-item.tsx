@@ -1,3 +1,6 @@
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
+import ShareIcon from '@mui/icons-material/Share'
 import {
   Avatar,
   Card,
@@ -8,9 +11,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import ShareIcon from '@mui/icons-material/Share'
+
 import { Recipe } from '../../types/models'
 
 export interface RecipeItemProps {
