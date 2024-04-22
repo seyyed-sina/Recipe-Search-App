@@ -1,23 +1,22 @@
 import { useState } from 'react';
 
-import { Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 
 import useEdamamFilter from '../../hooks/useEdamamFilter';
 import { Option } from '../../types/models';
 import RecipeItem from '../recipe-item/recipe-item';
 import RecipeSearch from '../recipe-search/recipe-search';
-interface SingleObj {
+interface QueryParam {
 	query: string;
 	[key: string]: string[] | string;
 }
 export function RecipeList() {
-	// const [searchTerm, setSearchTerm] = useState<string>('kale salad');
-	// const debouncedSearchTerm = useDebounce(searchTerm, 1000);
-	const [page, setPage] = useState(1);
-	const [selectedOption, setSelectedOption] = useState<SingleObj>({
+	const [selectedOption, setSelectedOption] = useState<QueryParam>({
 		query: '',
 	});
-	const { recipes, isLoading } = useEdamamFilter(selectedOption);
+
+	const { recipes, isLoading, _links, goToNextPage } =
+		useEdamamFilter(selectedOption);
 
 	/**
 	 * Handle the change event of the AutoComplete component
@@ -27,21 +26,21 @@ export function RecipeList() {
 	const handleAutoCompleteChange = (value: (string | Option)[]): void => {
 		/**
 		 * Reduce the array to a single object
-		 * The initial value of the reduce function is an empty SingleObj
+		 * The initial value of the reduce function is an empty QueryParam
 		 * This is because the user may type a single word or multiple words
 		 * and we need a single object to hold the values
 		 */
-		const singleObj: SingleObj = value.reduce(
+		const queryParam: QueryParam = value.reduce(
 			/**
 			 * The function takes two arguments:
-			 * 1. acc: This is the SingleObj that will be returned
+			 * 1. acc: This is the QueryParam that will be returned
 			 *    at the end of the reduce function. For the first iteration,
 			 *    the value of acc is the initial value we passed into reduce
 			 *    ({ query: '' })
 			 * 2. item: This is the current element being processed in the array
 			 *    (either a string or an Option)
 			 */
-			(acc: SingleObj, item: string | Option): SingleObj => {
+			(acc: QueryParam, item: string | Option): QueryParam => {
 				/**
 				 * If the item is a string,
 				 * set the "query" key in the acc object to the value of the string
@@ -66,22 +65,11 @@ export function RecipeList() {
 			},
 			/**
 			 * The initial value of the reduce function
-			 * This is an empty SingleObj
+			 * This is an empty QueryParam
 			 */
-			{} as SingleObj,
+			{} as QueryParam,
 		);
-		/**
-		 * Set the selectedOption state to the reduced singleObj
-		 * This is the object that will be used to filter the recipes
-		 */
-		setSelectedOption(singleObj);
-	};
-
-	const handlePageChange = (
-		event: React.ChangeEvent<unknown>,
-		value: number,
-	) => {
-		setPage(value);
+		setSelectedOption(queryParam);
 	};
 
 	return (
@@ -96,7 +84,7 @@ export function RecipeList() {
 					))}
 				</Grid>
 			)}
-			{!isLoading && recipes && recipes.length > 0 && (
+			{!isLoading && recipes?.length > 0 && (
 				<Grid container spacing={4}>
 					{recipes?.map((r) => (
 						<Grid item sm={3} key={r.uri}>
@@ -105,23 +93,21 @@ export function RecipeList() {
 					))}
 				</Grid>
 			)}
-			{selectedOption.query && recipes.length === 0 && (
+			{selectedOption.query && recipes?.length === 0 && (
 				<Typography variant="subtitle1" component={'p'}>
 					No recipes found
 				</Typography>
 			)}
-			{!selectedOption.query && (
+			{!selectedOption.query && recipes?.length === 0 && (
 				<Typography variant="subtitle1" component={'p'}>
 					Search for your favorite food
 				</Typography>
 			)}
-			{/* {!isLoading && recipes && recipes.length > 0 && (
-				<Pagination
-					count={count}
-					page={page}
-					onChange={handlePageChange}
-				/>
-			)} */}
+			{!isLoading && _links?.next && (
+				<Button variant="text" sx={{ mt: 4 }} onClick={goToNextPage}>
+					{_links?.next.title}
+				</Button>
+			)}
 		</div>
 	);
 }

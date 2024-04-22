@@ -6,9 +6,11 @@ export interface Hits {
 	_links?: {
 		self?: {
 			href: string;
+			title: string;
 		};
 		next?: {
 			href: string;
+			title: string;
 		};
 	};
 }
@@ -40,4 +42,12 @@ export interface Option {
 	name: string;
 	groupBy: string;
 	groupTitle: string;
+}
+
+export interface ScrollOptions {
+	behavior?: 'auto' | 'smooth';
+	block?: 'start' | 'center' | 'end' | 'nearest';
+	inline?: 'start' | 'center' | 'end' | 'nearest';
+	offset?: number;
+	hash?: boolean;
 }

@@ -1,15 +1,32 @@
 import { FC, SyntheticEvent, memo, useMemo } from 'react';
 
+import styled from '@emotion/styled';
 import { Restaurant, Search } from '@mui/icons-material';
 import {
 	Autocomplete,
 	AutocompleteRenderGetTagProps,
 	Chip,
 	TextField,
+	lighten,
 } from '@mui/material';
 
 import { cuisineType, diet, dishType, health, mealType } from '../../data';
 import { Option } from '../../types/models';
+
+const GroupHeader = styled('div')({
+	position: 'sticky',
+	display: 'flex',
+	alignItems: 'center',
+	// top: '-8px',
+	padding: '8px 16px',
+	color: '#1976d2',
+	backgroundColor: lighten('#1976d2', 0.85),
+});
+
+const GroupItem = styled('ul')({
+	paddingLeft: 16,
+	marginBottom: 8,
+});
 
 interface Props {
 	onChange: (value: (string | Option)[]) => void;
@@ -18,11 +35,11 @@ interface Props {
 const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 	const defaultOptions = useMemo(() => {
 		return [
-			{ name: 'Cuisine Type', group: 'cuisineType', list: cuisineType },
-			{ name: 'Diets Type', group: 'diet', list: diet },
-			{ name: 'Dish Type', group: 'dishType', list: dishType },
-			{ name: 'Health Type', group: 'health', list: health },
-			{ name: 'Meal Type', group: 'mealType', list: mealType },
+			{ name: 'Cuisine Type', type: 'cuisineType', list: cuisineType },
+			{ name: 'Diets Type', type: 'diet', list: diet },
+			{ name: 'Dish Type', type: 'dishType', list: dishType },
+			{ name: 'Health Type', type: 'health', list: health },
+			{ name: 'Meal Type', type: 'mealType', list: mealType },
 		]
 			.map((option) => {
 				const allList = option.list.map((item) => {
@@ -32,7 +49,7 @@ const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 					return {
 						title,
 						name: item,
-						groupBy: option.group,
+						groupBy: option.type,
 						groupTitle: option.name,
 					} as Option;
 				});
@@ -50,7 +67,7 @@ const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 			return (
 				<Chip
 					{...getTagProps({ index })}
-					icon={<Search />}
+					icon={<Search fontSize="small" />}
 					label={option}
 				/>
 			);
@@ -59,7 +76,7 @@ const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 			<Chip
 				{...getTagProps({ index })}
 				key={index}
-				icon={<Restaurant />}
+				icon={<Restaurant fontSize="small" />}
 				label={option?.title
 					.replace(/-/g, ' ')
 					.replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
@@ -77,6 +94,7 @@ const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 	return (
 		<Autocomplete
 			multiple
+			id="search-recipe"
 			options={defaultOptions}
 			groupBy={(option) => option.groupTitle}
 			isOptionEqualToValue={(option, value) => {
@@ -101,6 +119,15 @@ const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 					variant="filled"
 					label="Search Recipes"
 				/>
+			)}
+			renderGroup={(params) => (
+				<li key={params.key}>
+					<GroupHeader>
+						<Restaurant fontSize="small" sx={{ mr: 1 }} />
+						{params.group}
+					</GroupHeader>
+					<GroupItem>{params.children}</GroupItem>
+				</li>
 			)}
 		/>
 	);
