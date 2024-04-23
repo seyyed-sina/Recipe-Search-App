@@ -94,19 +94,22 @@ const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 	return (
 		<Autocomplete
 			multiple
-			id="search-recipe"
+			fullWidth
+			freeSolo
+			filterSelectedOptions
+			sx={{
+				mb: 2,
+				'.MuiFilledInput-root': {
+					pt: 3,
+					pb: 0.5,
+				},
+			}}
 			options={defaultOptions}
 			groupBy={(option) => option.groupTitle}
 			isOptionEqualToValue={(option, value) => {
 				return option.title === value.title;
 			}}
 			getOptionLabel={(option) => option.title}
-			fullWidth
-			filterSelectedOptions
-			freeSolo
-			sx={{
-				mb: 2,
-			}}
 			onChange={handleChange}
 			renderTags={(value, getTagProps) => {
 				return value.map((option: string | Option, index) =>
@@ -118,6 +121,15 @@ const RecipeSearch: FC<Props> = memo(({ onChange }) => {
 					{...params}
 					variant="filled"
 					label="Search Recipes"
+					placeholder="Type to search for your favorite food"
+					InputLabelProps={{
+						sx: {
+							transform: 'translate(16px, 21px) scale(1)',
+							'&.MuiInputLabel-shrink': {
+								transform: 'translate(12px, 7px) scale(0.75)',
+							},
+						},
+					}}
 				/>
 			)}
 			renderGroup={(params) => (

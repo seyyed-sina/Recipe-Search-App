@@ -1,18 +1,16 @@
-import { CssBaseline, Paper, Typography } from '@mui/material';
+import { Suspense } from 'react';
 
-import RecipeList from './components/recipe-list/recipe-list';
+import { CssBaseline } from '@mui/material';
+import { RouterProvider } from 'react-router-dom';
+
+import { routes } from './util/routes';
 
 export function App() {
 	return (
-		<>
+		<Suspense fallback={<div>Loading...</div>}>
 			<CssBaseline />
-			<Paper elevation={5} sx={{ m: 5, p: 5 }}>
-				<Typography variant="h2" sx={{ pb: 2 }}>
-					Hyphen Candidate Project
-				</Typography>
-				<RecipeList />
-			</Paper>
-		</>
+			<RouterProvider router={routes} />
+		</Suspense>
 	);
 }
 

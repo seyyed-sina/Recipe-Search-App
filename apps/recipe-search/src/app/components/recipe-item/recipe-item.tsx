@@ -1,5 +1,4 @@
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
 import {
 	Avatar,
@@ -11,9 +10,12 @@ import {
 	IconButton,
 	Skeleton,
 	Typography,
+	lighten,
 } from '@mui/material';
+import { useSearchParams } from 'react-router-dom';
 
 import { Recipe } from '../../types/models';
+import { Highlighter } from '../ui/Highlighter';
 
 export interface RecipeItemProps {
 	recipe?: Recipe;
@@ -22,6 +24,14 @@ export interface RecipeItemProps {
 
 export function RecipeItem(props: RecipeItemProps) {
 	const { recipe, loading } = props;
+	const [searchParams] = useSearchParams();
+	const queryParam = searchParams.get('query') || '';
+	const cuisineParam = searchParams.get('cuisineType') || '';
+	const dishParam = searchParams.get('dishType') || '';
+	const mealParam = searchParams.get('mealType') || '';
+	const healthParam = searchParams.get('healthType') || '';
+	const dietParam = searchParams.get('dietType') || '';
+	const highlighterSearch = `${queryParam} ${cuisineParam} ${dishParam} ${mealParam} ${healthParam} ${dietParam}`;
 
 	return (
 		<Card
@@ -29,6 +39,13 @@ export function RecipeItem(props: RecipeItemProps) {
 			// sx={{ minHeight: 500, maxHeight: 500, overflow: 'auto' }}
 			sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
 			<CardHeader
+				sx={{
+					'.MuiCardHeader-content': {
+						minWidth: '1px',
+						display: 'flex',
+						flexDirection: 'column',
+					},
+				}}
 				avatar={
 					loading ? (
 						<Skeleton
@@ -52,7 +69,20 @@ export function RecipeItem(props: RecipeItemProps) {
 							style={{ marginBottom: 6 }}
 						/>
 					) : (
-						recipe?.label
+						<Typography
+							component={'h3'}
+							variant="body2"
+							title={recipe?.label}
+							sx={{
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								whiteSpace: 'nowrap',
+							}}>
+							<Highlighter
+								text={recipe?.label}
+								search={highlighterSearch}
+							/>
+						</Typography>
 					)
 				}
 				subheader={
@@ -71,7 +101,11 @@ export function RecipeItem(props: RecipeItemProps) {
 				/>
 			) : (
 				<CardMedia
-					sx={{ height: 0, pt: 25 }}
+					sx={{
+						height: 0,
+						pt: 25,
+						backgroundColor: lighten('#00695c', 0.5),
+					}}
 					image={recipe?.image}
 					title={recipe?.label}
 				/>
@@ -79,7 +113,7 @@ export function RecipeItem(props: RecipeItemProps) {
 			<CardContent
 				// TODO: make this ellipsis
 				// sx={{ minHeight: 150, maxHeight: 150, overflow: 'auto' }}
-				sx={{ flexGrow: 1 }}>
+				sx={{ flexGrow: 1, minWidth: 1 }}>
 				{loading ? (
 					<div
 						style={{
@@ -101,9 +135,12 @@ export function RecipeItem(props: RecipeItemProps) {
 							whiteSpace: 'pre-wrap',
 						}}
 						component="p">
-						{recipe?.ingredientLines
-							.map((igr) => `${igr};`)
-							.join('\n')}
+						<Highlighter
+							text={recipe?.ingredientLines
+								.map((igr) => `${igr};`)
+								.join('\n')}
+							search={highlighterSearch}
+						/>
 					</Typography>
 				)}
 			</CardContent>

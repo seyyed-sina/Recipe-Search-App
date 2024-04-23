@@ -1,8 +1,10 @@
 import { useState } from 'react';
 
+import { ChevronRight } from '@mui/icons-material';
 import { Button, Grid, Typography } from '@mui/material';
+import { useSearchParams } from 'react-router-dom';
 
-import useEdamamFilter from '../../hooks/useEdamamFilter';
+import useEdamamSearch from '../../hooks/useEdamamSearch';
 import { Option } from '../../types/models';
 import RecipeItem from '../recipe-item/recipe-item';
 import RecipeSearch from '../recipe-search/recipe-search';
@@ -11,12 +13,13 @@ interface QueryParam {
 	[key: string]: string[] | string;
 }
 export function RecipeList() {
+	const [searchParams, setSearchParams] = useSearchParams();
 	const [selectedOption, setSelectedOption] = useState<QueryParam>({
-		query: '',
+		query: searchParams.get('query') || '',
 	});
 
-	const { recipes, isLoading, _links, goToNextPage } =
-		useEdamamFilter(selectedOption);
+	const { count, from, to, recipes, isLoading, _links, goToNextPage } =
+		useEdamamSearch(selectedOption);
 
 	/**
 	 * Handle the change event of the AutoComplete component
@@ -70,11 +73,13 @@ export function RecipeList() {
 			{} as QueryParam,
 		);
 		setSelectedOption(queryParam);
+		setSearchParams(queryParam);
 	};
 
 	return (
 		<div>
 			<RecipeSearch onChange={handleAutoCompleteChange} />
+
 			{isLoading && (
 				<Grid container spacing={4}>
 					{Array.from({ length: 12 }, (_, index) => (
@@ -84,7 +89,7 @@ export function RecipeList() {
 					))}
 				</Grid>
 			)}
-			{!isLoading && recipes?.length > 0 && (
+			{!isLoading && recipes && recipes?.length > 0 && (
 				<Grid container spacing={4}>
 					{recipes?.map((r) => (
 						<Grid item sm={3} key={r.uri}>
@@ -93,21 +98,49 @@ export function RecipeList() {
 					))}
 				</Grid>
 			)}
-			{selectedOption.query && recipes?.length === 0 && (
+			{!isLoading && recipes?.length === 0 && (
 				<Typography variant="subtitle1" component={'p'}>
 					No recipes found
 				</Typography>
 			)}
-			{!selectedOption.query && recipes?.length === 0 && (
-				<Typography variant="subtitle1" component={'p'}>
-					Search for your favorite food
-				</Typography>
-			)}
-			{!isLoading && _links?.next && (
-				<Button variant="text" sx={{ mt: 4 }} onClick={goToNextPage}>
-					{_links?.next.title}
-				</Button>
-			)}
+			<div
+				style={{
+					display: 'flex',
+					alignItems: 'center',
+					gap: 16,
+					marginTop: 32,
+				}}>
+				{count > 0 && (
+					<Typography
+						color="GrayText"
+						component={'div'}
+						sx={{
+							display: 'flex',
+							alignItems: 'center',
+							gap: 0.5,
+							flexGrow: 1,
+						}}>
+						Showing
+						<Typography variant="subtitle2">
+							{from ?? '---'}
+						</Typography>
+						to
+						<Typography variant="subtitle2">
+							{to ?? '---'}
+						</Typography>
+						of <Typography variant="subtitle2">{count}</Typography>
+						food results
+					</Typography>
+				)}
+				{!isLoading && _links?.next && (
+					<Button
+						variant="contained"
+						onClick={goToNextPage}
+						endIcon={<ChevronRight />}>
+						Next Page
+					</Button>
+				)}
+			</div>
 		</div>
 	);
 }
